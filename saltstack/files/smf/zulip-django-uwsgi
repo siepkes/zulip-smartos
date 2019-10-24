@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Helper script to start Zulip Django with the correct Python environment.
+
+. /lib/svc/share/smf_include.sh
+
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+# Activate Python 3 virtual environment.
+source /srv/zulip-py3-venv/bin/activate
+
+cd /home/zulip
+
+uwsgi --ini /etc/zulip/uwsgi.ini

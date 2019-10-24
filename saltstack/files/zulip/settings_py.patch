@@ -1,0 +1,50 @@
+--- ./zulip-server-2.0.2-orig/zproject/settings.py	2019-03-24 11:32:06.849856657 +0100
++++ ./zulip-server-2.0.2/zproject/settings.py	2019-03-24 11:43:18.190349571 +0100
+@@ -600,38 +600,6 @@
+ # DATABASE CONFIGURATION
+ ########################################################################
+ 
+-DATABASES = {"default": {
+-    'ENGINE': 'django.db.backends.postgresql',
+-    'NAME': 'zulip',
+-    'USER': 'zulip',
+-    'PASSWORD': '',  # Authentication done via certificates
+-    'HOST': '',  # Host = '' => connect through a local socket
+-    'SCHEMA': 'zulip',
+-    'CONN_MAX_AGE': 600,
+-    'OPTIONS': {
+-        'connection_factory': TimeTrackingConnection
+-    },
+-}}
+-
+-if DEVELOPMENT:
+-    LOCAL_DATABASE_PASSWORD = get_secret("local_database_password")
+-    DATABASES["default"].update({
+-        'PASSWORD': LOCAL_DATABASE_PASSWORD,
+-        'HOST': 'localhost'
+-    })
+-elif REMOTE_POSTGRES_HOST != '':
+-    DATABASES['default'].update({
+-        'HOST': REMOTE_POSTGRES_HOST,
+-    })
+-    if get_secret("postgres_password") is not None:
+-        DATABASES['default'].update({
+-            'PASSWORD': get_secret("postgres_password"),
+-        })
+-    if REMOTE_POSTGRES_SSLMODE != '':
+-        DATABASES['default']['OPTIONS']['sslmode'] = REMOTE_POSTGRES_SSLMODE
+-    else:
+-        DATABASES['default']['OPTIONS']['sslmode'] = 'verify-full'
+-
+ ########################################################################
+ # RABBITMQ CONFIGURATION
+ ########################################################################
+@@ -1076,7 +1044,7 @@
+ 
+ DEFAULT_ZULIP_HANDLERS = (
+     (['zulip_admins'] if ERROR_REPORTING else []) +
+-    ['console', 'file', 'errors_file']
++    ['console']
+ )
+ 
+ LOGGING = {

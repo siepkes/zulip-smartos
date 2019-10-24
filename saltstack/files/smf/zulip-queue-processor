@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Helper script to start Zulip queue processing of the '{{ queue_name }}' queue.
+
+. /lib/svc/share/smf_include.sh
+
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+# Activate Python 3 virtual environment.
+source /srv/zulip-py3-venv/bin/activate
+
+cd /home/zulip
+
+# --no-color since the output is piped in to log files.
+# --verbosity 0 to make the app a little less chatty. 1 Is quite verbose. Logs messages for each event handled.
+
+./manage.py process_queue --all --verbosity 0 --no-color

@@ -1,0 +1,13 @@
+--- ./zulip-server-2.0.2-orig/zerver/views/messages.py	2019-03-24 11:32:06.831856751 +0100
++++ ./zulip-server-2.0.2/zerver/views/messages.py	2019-03-24 11:40:22.274268711 +0100
+@@ -377,8 +377,8 @@
+ 
+     def _by_search_pgroonga(self, query: Query, operand: str,
+                             maybe_negate: ConditionTransform) -> Query:
+-        match_positions_character = func.pgroonga_match_positions_character
+-        query_extract_keywords = func.pgroonga_query_extract_keywords
++        match_positions_character = func.pgroonga.match_positions_character
++        query_extract_keywords = func.pgroonga.query_extract_keywords
+         operand_escaped = func.escape_html(operand)
+         keywords = query_extract_keywords(operand_escaped)
+         query = query.column(match_positions_character(column("rendered_content"),

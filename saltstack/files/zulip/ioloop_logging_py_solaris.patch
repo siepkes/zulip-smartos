@@ -1,0 +1,13 @@
+--- ./zulip-server-2.0.2-orig/zerver/tornado/ioloop_logging.py	2019-03-24 11:32:06.848856663 +0100
++++ ./zulip-server-2.0.2/zerver/tornado/ioloop_logging.py	2019-03-24 11:33:01.906569085 +0100
+@@ -8,8 +8,8 @@
+ 
+ # There isn't a good way to get at what the underlying poll implementation
+ # will be without actually constructing an IOLoop, so we just assume it will
+-# be epoll.
+-orig_poll_impl = select.epoll
++# be devpoll (SmartOS / Illumos).
++orig_poll_impl = select.devpoll
+ 
+ # This is used for a somewhat hacky way of passing the port number
+ # into this early-initialized module.

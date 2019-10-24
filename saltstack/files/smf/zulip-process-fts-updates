@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Helper script to start the Zulip Full text search processor.
+
+. /lib/svc/share/smf_include.sh
+
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+# Activate Python 3 virtual environment.
+source /srv/zulip-py3-venv/bin/activate
+
+cd /home/zulip
+
+# Normally this is copied to /usr/local/bin by puppet but we use it directly.
+./puppet/zulip/files/postgresql/process_fts_updates

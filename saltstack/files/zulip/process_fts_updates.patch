@@ -1,0 +1,13 @@
+--- ./zulip-server-2.0.2-orig/puppet/zulip/files/postgresql/process_fts_updates	2019-03-24 11:32:06.711857378 +0100
++++ ./zulip-server-2.0.2/puppet/zulip/files/postgresql/process_fts_updates	2019-03-24 11:36:57.767337134 +0100
+@@ -39,10 +39,6 @@
+                            "search_pgroonga = "
+                            "escape_html(subject) || ' ' || rendered_content "
+                            "WHERE id = %s", (message_id,))
+-        cursor.execute("UPDATE zerver_message SET "
+-                       "search_tsvector = to_tsvector('zulip.english_us_search', "
+-                       "subject || rendered_content) "
+-                       "WHERE id = %s", (message_id,))
+         ids.append(id)
+     cursor.execute("DELETE FROM fts_update_log WHERE id = ANY(%s)", (ids,))
+ 

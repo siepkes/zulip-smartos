@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Helper script to start Zulip Tornado with the correct Python environment.
+
+. /lib/svc/share/smf_include.sh
+
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+# Activate Python 3 virtual environment.
+source /srv/zulip-py3-venv/bin/activate
+
+cd /home/zulip
+
+# Start command from: puppet/zulip/files/supervisor/conf.d/zulip.conf
+./manage.py runtornado 127.0.0.1:9993

@@ -1,0 +1,94 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+
+<service_bundle type='manifest' name='queue-processor'>
+
+	<service
+			name='zulip/queue-processor'
+			type='service'
+			version='1'>
+
+		<create_default_instance enabled='false' />
+
+		<single_instance />
+
+		<dependency
+				name='fs'
+				grouping='require_all'
+				restart_on='none'
+				type='service'>
+			<service_fmri value='svc:/system/filesystem/minimal' />
+		</dependency>
+
+		<dependency
+				name='network_initial'
+				grouping='optional_all'
+				restart_on='none'
+				type='service'>
+			<service_fmri value='svc:/network/routing-setup:default' />
+			<service_fmri value='svc:/network/initial:default' />
+		</dependency>
+
+		<dependency
+				name='network_ipfilter'
+				grouping='optional_all'
+				restart_on='none'
+				type='service'>
+			<service_fmri value='svc:/network/ipfilter:default' />
+		</dependency>
+
+		<!-- If Consul template is installed we assume Jetty is depended on it. -->
+		<dependency
+				name='consul_template'
+				grouping='optional_all'
+				restart_on='none'
+				type='service'>
+			<service_fmri value='svc:/network/consul-template:default' />
+		</dependency>
+
+		<!-- Use a timeout of '0' because the Zulip queue processor doesn't detach itself from the console. -->
+		<exec_method
+				type='method'
+				name='start'
+				exec='/lib/svc/manifest/site/zulip-queue-processor'
+				timeout_seconds='0'>
+			<method_context working_directory="/home/zulip">
+				<method_credential 
+						user='zulip'
+						group='zulip' />
+			</method_context>
+		</exec_method>
+
+		<!-- Sending an interrupt signal (SIGINT) gracefully stops Jetty. -->
+		<exec_method
+				type='method'
+				name='stop'
+				exec=':kill -INT'
+				timeout_seconds='60'>
+		</exec_method>
+
+		<!-- Does not detach from the console (ie. does not daemonize). -->
+		<property_group name='startd' type='framework'>
+			<propval name='duration' type='astring' value='child' />
+		</property_group>
+
+		<!-- Allow users with a specific authorization to manage (ie. restart and such) this service. -->
+		<!-- Mainly useful to have Consul template refresh our service when the configuration has changed. -->
+		<property_group name='general' type='framework'>
+			<propval name='action_authorization' type='astring' value='solaris.smf.manage.zulip' />
+		</property_group>
+
+		<stability value='Unstable' />
+
+		<template>
+			<common_name>
+				<loctext xml:lang='C'>
+					Zulip queue processor
+				</loctext>
+			</common_name>
+		</template>
+
+	</service>
+
+</service_bundle>
+
